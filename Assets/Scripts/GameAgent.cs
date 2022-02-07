@@ -36,7 +36,7 @@ public abstract class GameAgent
     protected GameAgent(GameObject gameObject)
     {
         _gameObject = gameObject;
-        _gameObject.transform.parent = Services.GameManager.parent_gameAgents.transform;
+        _gameObject.transform.parent = Services.GameManager.parentGameAgents.transform;
         _renderer = _gameObject.GetComponent<Renderer>();
         _rigidbody = _gameObject.GetComponent<Rigidbody>();
     }
@@ -47,7 +47,7 @@ public abstract class GameAgent
     //destroy gameObject
     public void Destroy()
     {
-        UnityEngine.Object.Destroy(_gameObject);
+        Object.Destroy(_gameObject);
     }
 
     #endregion

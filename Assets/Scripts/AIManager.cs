@@ -8,7 +8,6 @@ public class AIManager
     //list of all game agents in game
     private List<GameAgent> _gameAgents;
     private List<Gold> _golds;
-    //private int amount_GoldShower = 20;
     private float timer_GoldShower = 10;
     private float timerTotal_GoldShower = 10;
 
@@ -46,12 +45,20 @@ public class AIManager
     }
     
     //destroy all game agents
-    public void Destroy()
+    public void DestroyAllObjects()
     {
         foreach (var agent in _gameAgents)
         {
             agent.Destroy();
         }
+        _gameAgents.Clear();
+
+        foreach (var gold in _golds)
+        {
+            Object.Destroy(gold.gameObject);
+        }
+        
+        _golds.Clear();
     }
     
     
@@ -92,6 +99,7 @@ public class AIManager
         foreach (var player in Services.Players)
         {
             player.SetTeam(player.teamID, true);
+            _gameAgents.Add(player);
         }
         //makes two teams hence teamID < 2
         for(int teamID = 0; teamID < 2; teamID++)
