@@ -1,7 +1,11 @@
-﻿using System.Collections;
+﻿
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Object = UnityEngine.Object;
+using Random = UnityEngine.Random;
 
 public class AIManager
 {
@@ -11,8 +15,12 @@ public class AIManager
     private float timer_GoldShower = 10;
     private float timerTotal_GoldShower = 10;
 
+    public int redScore = 0;
+    public int blueScore = 0;
+
     public void Initialize()
     {
+        Services.EventManager.OnGoldPickedUp += AddToTeamScores;
         _gameAgents = new List<GameAgent>();
         _golds = new List<Gold>();
         _CreateAIPlayers();
@@ -129,4 +137,17 @@ public class AIManager
             _golds.Add(createdGameObject);
         }
     }
+
+    private void AddToTeamScores(object sender, EventManager.OnGoldPickedUpArgs e)
+    {
+        if (e.blueOrRed == 0)
+        {
+            blueScore++;
+        }
+        else
+        {
+            redScore++;
+        }
+    }
+
 }

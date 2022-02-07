@@ -22,6 +22,8 @@ public static class Services
         }
         set => _players = value;
     }
+
+    public static EventManager EventManager;
 }
 
 public class GameManager : MonoBehaviour
@@ -45,7 +47,11 @@ public class GameManager : MonoBehaviour
     public GameObject endScreen;
     public GameObject parentGameAgents;
 
-    [Header("UI")] public Text timerText;
+    [Header("UI")] 
+    public Text timerText;
+    public Text redTeamScoreText;
+    public Text blueTeamScoreText;
+    
     //state machine variables
     public FiniteStateMachine currentState;
     public State_StartScreen StateStartScreen = new State_StartScreen();
@@ -55,10 +61,12 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         Services.GameManager = this;
+        Services.EventManager = new EventManager();
     }
     
     private void Start()
     {
+        Services.EventManager.OnGoldPickedUp += UpdateTeamScore;
         currentState = StateStartScreen;
 
         currentState.OnEnter(this);
@@ -90,6 +98,24 @@ public class GameManager : MonoBehaviour
         timerText.text = timeLeftInGame.ToString("F0");
         return false;
 
+    }
+
+    private void UpdateTeamScore(object sender, EventManager.OnGoldPickedUpArgs e)
+    {
+        if (e.blueOrRed == 0)
+        {
+            blueTeamScoreText.text = Services.AIManager.blueScore.ToString();
+        }
+        else
+        {
+            redTeamScoreText.text = Services.AIManager.redScore.ToString();
+        }
+        
+    }
+
+    private void OnDestroy()
+    {
+        Services.EventManager.OnGoldPickedUp -= UpdateTeamScore;
     }
 }
 

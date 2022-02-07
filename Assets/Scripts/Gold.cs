@@ -10,6 +10,7 @@ public class Gold : MonoBehaviour
         if (!other.tag.Contains("GameAgent")) return;
 
         var teamID = int.Parse(other.tag.Split('_')[1]);
+        Services.EventManager.GoldPickUp(teamID);
         Services.AIManager.DestroyGold(this);
     }
 }
