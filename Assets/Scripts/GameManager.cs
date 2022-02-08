@@ -51,6 +51,8 @@ public class GameManager : MonoBehaviour
     public Text timerText;
     public Text redTeamScoreText;
     public Text blueTeamScoreText;
+    public Text redTeamScoreFinalText;
+    public Text blueTeamScoreFinalText;
     
     //state machine variables
     public FiniteStateMachine currentState;
@@ -67,6 +69,7 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         Services.EventManager.OnGoldPickedUp += UpdateTeamScore;
+        Services.EventManager.OnGameEnd += UpdateFinalScores;
         currentState = StateStartScreen;
 
         currentState.OnEnter(this);
@@ -84,20 +87,19 @@ public class GameManager : MonoBehaviour
         state.OnEnter(this);
     }
 
-    public bool InGameTimer()
+    public void InGameTimer()
     {
         if (_gameTimer > GameSetting_GameTimerTotal)
         {
             Debug.Log("timer done");
             _gameTimer = 0;
-            return true;
+            Services.EventManager.GameTimeOut();
+            return;
         }
 
         _gameTimer += Time.deltaTime;
         float timeLeftInGame = GameSetting_GameTimerTotal - _gameTimer;
         timerText.text = timeLeftInGame.ToString("F0");
-        return false;
-
     }
 
     private void UpdateTeamScore(object sender, EventManager.OnGoldPickedUpArgs e)
@@ -112,10 +114,17 @@ public class GameManager : MonoBehaviour
         }
         
     }
+    
+    private void UpdateFinalScores(object sender, EventArgs e)
+    {
+        blueTeamScoreFinalText.text = "Final Score:\n" + Services.AIManager.blueScore;
+        redTeamScoreFinalText.text = "Final Score:\n" + Services.AIManager.redScore;
+    }
 
     private void OnDestroy()
     {
         Services.EventManager.OnGoldPickedUp -= UpdateTeamScore;
+        Services.EventManager.OnGameEnd -= UpdateFinalScores;
     }
 }
 

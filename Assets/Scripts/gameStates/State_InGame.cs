@@ -1,11 +1,14 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 public class State_InGame : FiniteStateMachine
 {
     public override void OnEnter(GameManager gameManager)
     {
+        Services.EventManager.OnGameEnd += GameTimerEnd;
         Debug.Log("hello from in game");
         gameManager.startScreen.SetActive(false);
         gameManager.inGameUI.SetActive(true);
@@ -23,10 +26,12 @@ public class State_InGame : FiniteStateMachine
         //update game UI
         //update game agents
         Services.AIManager.Update();
-        //preform game timer stuff
-        if (gameManager.InGameTimer())
-        {
-            gameManager.SwitchState(gameManager.StateEndGame);
-        }
+        Services.GameManager.InGameTimer();
+    }
+
+    private void GameTimerEnd(object sender, EventArgs e)
+    {
+        Services.GameManager.SwitchState(Services.GameManager.StateEndGame);
+        Services.EventManager.OnGameEnd -= GameTimerEnd;
     }
 }

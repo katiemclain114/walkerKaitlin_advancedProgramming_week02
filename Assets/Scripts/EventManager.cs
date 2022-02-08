@@ -13,8 +13,21 @@ public class EventManager
         public int blueOrRed;
     }
 
+    public event EventHandler OnGameStart;
+    public event EventHandler OnGameEnd;
+
     public void GoldPickUp(int redOrBlue)
     {
         OnGoldPickedUp?.Invoke(this, new OnGoldPickedUpArgs {blueOrRed = redOrBlue});
+    }
+
+    public void GameStart()
+    {
+        OnGameStart?.Invoke(this, EventArgs.Empty);
+    }
+
+    public void GameTimeOut()
+    {
+        OnGameEnd?.Invoke(this, EventArgs.Empty);
     }
 }
